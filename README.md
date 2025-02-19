@@ -62,8 +62,3 @@ This will start the client application in development mode.
 ## Environment Variables
 
 Ensure you have the correct environment variables set up for both the server and client. You can find the necessary environment variables in the .env.example file provided in both the server and client directories. Copy this file to .env in each directory and update the values with your local configuration.
-
-## Acknowledgments
-
-- Supabase
-- Bun
