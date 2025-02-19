@@ -37,6 +37,18 @@ export const postShortUrl = async (req: Request, res: Response) => {
 
   const short_url = `${process.env.BASE_URL}/${insertedCode}`;
 
+  const { error: insertedError } = await supabase
+    .from("user_urls")
+    .insert({
+      user_id: req.body.user.id,
+      short_code: insertedCode,
+    });
+
+  if (insertedError) {
+    res.status(500).json({ error: insertedError.message });
+    return;
+  }
+
   res.json({ short_url, short_code: insertedCode });
 };
 

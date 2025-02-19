@@ -11,16 +11,15 @@ import { errorHandler } from "@/lib/utils";
 import { API_URL } from "@/utils/constants";
 import { supabase } from "@/utils/supabase";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { ShortLink } from ".";
 
-type ShortLinks = {
-  short_code: {
-    short_code: string;
-    destination_url: string;
-    click_count: number;
-  };
-}[];
-export default function ShortLinkTable() {
-  const [shortLinks, setShortLinks] = useState<ShortLinks>([]);
+export default function ShortLinkTable({
+  setSelectedShortLink,
+}: {
+  setSelectedShortLink: React.Dispatch<React.SetStateAction<ShortLink | null>>;
+}) {
+  const [shortLinks, setShortLinks] = useState<ShortLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -30,7 +29,7 @@ export default function ShortLinkTable() {
           .from("user_urls")
           .select("short_code (short_code,destination_url ,click_count)");
 
-        console.log({ data, error });
+        // console.log({ data, error });
         if (error) throw error;
         // @ts-expect-error supabase doesn't know type of joined table
         setShortLinks(data);
@@ -53,6 +52,7 @@ export default function ShortLinkTable() {
           <TableHead>Url</TableHead>
           <TableHead className="w-[100px]">Short code</TableHead>
           <TableHead className="w-[100px]">Count</TableHead>
+          <TableHead className="w-[100px]">Action</TableHead>
         </TableRow>
       </TableHeader>
       {loading ? (
@@ -80,6 +80,18 @@ export default function ShortLinkTable() {
                 </a>
               </TableCell>
               <TableCell>{sl.short_code.click_count}</TableCell>
+              <TableCell>
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setSelectedShortLink(sl);
+                  }}
+                >
+                  View
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
