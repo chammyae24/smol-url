@@ -23,6 +23,12 @@ supabase start
 
 This will start the Supabase services.
 
+Run the following command if supababase information not show up
+
+```bash
+supabase status
+```
+
 ### 2. Start the Server
 
 Navigate to the `server` directory:
