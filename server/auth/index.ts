@@ -34,7 +34,7 @@ export const signUp = async (req: Request, res: Response) => {
     return;
   }
 
-  res.status(200).json({ data });
+  res.status(200).json(data);
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -50,5 +50,5 @@ export const login = async (req: Request, res: Response) => {
     return;
   }
 
-  res.status(200).json({ data });
+  res.status(200).json(data);
 };

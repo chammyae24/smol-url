@@ -3,18 +3,6 @@ import { nanoid } from "nanoid";
 import { supabase, supabaseAdmin } from "../utils/supabase";
 import { errorHandler } from "../utils";
 
-// const insertUrl = async (
-//   url: string,
-//   shortCode: string,
-//   query_params: Record<string, string>,
-// ) => {
-//   return await supabase.from("urls").insert({
-//     destination_url: url,
-//     short_code: shortCode,
-//     url_params: query_params,
-//   });
-// };
-
 export const postShortUrl = async (req: Request, res: Response) => {
   const { url } = req.body;
 
@@ -58,7 +46,7 @@ export const getShortUrl = async (req: Request, res: Response) => {
 
     const { data, error } = await supabaseAdmin
       .from("urls")
-      .select("destination_url, url_params")
+      .select("id, destination_url, url_params, click_count")
       .match({
         short_code,
       })
@@ -75,6 +63,20 @@ export const getShortUrl = async (req: Request, res: Response) => {
     Object.entries(query_params).forEach(([key, value]) =>
       url.searchParams.set(key, value)
     );
+
+    const user_agent = req.headers["user-agent"] || null;
+    const ip_address = req.headers["x-forwarded-for"] ||
+      req.connection.remoteAddress || null;
+
+    await Promise.all([
+      supabaseAdmin
+        .from("urls")
+        .update({ click_count: data.click_count + 1 })
+        .match({ id: data.id, short_code }),
+      supabaseAdmin
+        .from("clicks")
+        .insert({ code: short_code, user_agent, ip_address }),
+    ]);
 
     res.redirect(url.toString());
   } catch (error) {
