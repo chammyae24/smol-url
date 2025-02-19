@@ -67,4 +67,3 @@ Ensure you have the correct environment variables set up for both the server and
 
 - Supabase
 - Bun
-- Any other tools, libraries, or people who helped you with the project.
